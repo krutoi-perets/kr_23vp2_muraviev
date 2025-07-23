@@ -1,0 +1,457 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>KR_23VP2_Muraviev</name>
+    </assembly>
+    <members>
+        <member name="T:KR_23VP2_Muraviev.ProductController">
+            <summary>
+            Контроллер для работы с товарами и базой данных.
+            </summary>
+        </member>
+        <member name="F:KR_23VP2_Muraviev.ProductController.dbHelper">
+            <summary>
+            Объект-помощник для работы с базой данных.
+            </summary>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.ProductController.#ctor">
+            <summary>
+            Конструктор класса.
+            </summary>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.ProductController.DBExist">
+            <summary>
+            Проверяет, существует ли текущая база данных.
+            </summary>
+            <returns>true, если база данных существует, иначе false.</returns>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.ProductController.CreateNewDB(System.String)">
+            <summary>
+            Создаёт новую базу данных.
+            </summary>
+            <param name="path">Полный путь для создания файла базы данных.</param>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.ProductController.DeleteDB">
+            <summary>
+            Удаляет текущую базу данных.
+            </summary>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.ProductController.OpenDB(System.String)">
+            <summary>
+            Открывает выбранную базу данных.
+            </summary>
+            <param name="path">Полный путь к файлу базы данных для открытия.</param>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.ProductController.SaveChanges(System.Windows.Forms.DataGridView)">
+            <summary>
+            Сохраняет изменения списка товаров в базе данных.
+            </summary>
+            <param name="dataGridView">Таблица с исходными данными.</param>
+            <returns>Кортеж с количеством сохранённых, обновлённых и удалённых записей.</returns>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.ProductController.LoadAll">
+            <summary>
+            Загружает все товары из базы данных.
+            </summary>
+            <returns>Список всех товаров.</returns>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.ProductController.GetProductsFromTable(System.Windows.Forms.DataGridView)">
+            <summary>
+            Извлекает список товаров из таблицы DataGridView.
+            </summary>
+            <returns>Список товаров, соответствующих строкам таблицы.</returns>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.ProductController.GenerateReport(System.Windows.Forms.DataGridView,System.String)">
+            <summary>
+            Генерирует PDF-отчёт по списку товаров и сохраняет его в указанный файл.
+            </summary>
+            <param name="dataGridView">Таблица с исходными данными.</param>
+            <param name="filePath">Путь для сохранения PDF-файла.</param>
+        </member>
+        <member name="T:KR_23VP2_Muraviev.DBHelper">
+            <summary>
+            Класс-помощник для работы с базой данных SQLite и генерацией PDF-отчётов.
+            </summary>
+        </member>
+        <member name="F:KR_23VP2_Muraviev.DBHelper.dbPath">
+            <summary>
+            Путь к файлу базы данных SQLite.
+            Используется для подключения к текущей базе данных проекта.
+            </summary>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.DBHelper.GetPath">
+            <summary>
+            Возвращает текущий путь к базе данных.
+            </summary>
+            <returns>Путь к файлу базы данных.</returns>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.DBHelper.IsDBExist">
+            <summary>
+            Проверяет, существует ли база данных по текущему пути.
+            </summary>
+            <returns>true, если файл существует, иначе false.</returns>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.DBHelper.CreateDB(System.String)">
+            <summary>
+            Создаёт новую базу данных по указанному пути.
+            Если файл уже существует — он будет удалён.
+            Создаётся таблица products.
+            </summary>
+            <param name="path">Полный путь для создания базы данных.</param>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.DBHelper.DeleteCurDB">
+            <summary>
+            Удаляет текущую базу данных и сбрасывает путь.
+            </summary>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.DBHelper.OpenSelectedDB(System.String)">
+            <summary>
+            Открывает существующую базу данных по указанному пути.
+            </summary>
+            <param name="path">Путь к существующему файлу базы данных.</param>
+            <exception cref="T:System.Exception">Если файл не найден.</exception>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.DBHelper.GetAll">
+            <summary>
+            Загружает все записи товаров из базы данных.
+            </summary>
+            <returns>Список товаров.</returns>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.DBHelper.SaveAll(System.Collections.Generic.List{KR_23VP2_Muraviev.Product})">
+            <summary>
+            Сохраняет список товаров в базу данных.
+            Добавляет, обновляет или удаляет записи в зависимости от значения поля Tag у товара.
+            </summary>
+            <param name="products">Список товаров для обработки.</param>
+            <returns>Кортеж с количеством добавленных, обновлённых и удалённых записей.</returns>
+            <exception cref="T:System.Exception">Если база данных не существует.</exception>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.DBHelper.GeneratePdfReport(System.Collections.Generic.List{KR_23VP2_Muraviev.Product},System.String)">
+            <summary>
+            Генерирует PDF-отчёт по товарам и сохраняет его в файл.
+            </summary>
+            <param name="products">Список товаров для отчёта.</param>
+            <param name="filePath">Путь для сохранения PDF-файла.</param>
+        </member>
+        <member name="T:KR_23VP2_Muraviev.Product">
+            <summary>
+            Представляет товар на складе.
+            </summary>
+        </member>
+        <member name="P:KR_23VP2_Muraviev.Product.Name">
+            <summary>
+            Название товара.
+            </summary>
+        </member>
+        <member name="P:KR_23VP2_Muraviev.Product.Category">
+            <summary>
+            Категория товара.
+            </summary>
+        </member>
+        <member name="P:KR_23VP2_Muraviev.Product.Amount">
+            <summary>
+            Количество товара на складе.
+            </summary>
+        </member>
+        <member name="P:KR_23VP2_Muraviev.Product.Price">
+            <summary>
+            Цена за единицу товара.
+            </summary>
+        </member>
+        <member name="P:KR_23VP2_Muraviev.Product.Tag">
+            <summary>
+            Тег состояния строки (new, edit, delete).
+            </summary>
+        </member>
+        <member name="T:KR_23VP2_Muraviev.HelloForm">
+            <summary>
+            Всплывающее окно с информацией.
+            </summary>
+        </member>
+        <member name="F:KR_23VP2_Muraviev.HelloForm.timer">
+            <summary>
+            Таймер для автоматического закрытия формы.
+            </summary>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.HelloForm.#ctor">
+            <summary>
+            Конструктор формы.
+            </summary>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.HelloForm.HelloForm_Load(System.Object,System.EventArgs)">
+            <summary>
+            Загрузка формы.
+            </summary>
+            <param name="sender">Объект, вызвавший событие.</param>
+            <param name="e">Аргументы события.</param>
+        </member>
+        <member name="F:KR_23VP2_Muraviev.HelloForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.HelloForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.HelloForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:KR_23VP2_Muraviev.MainForm">
+            <summary>
+            Класс главной формы.
+            </summary>
+        </member>
+        <member name="F:KR_23VP2_Muraviev.MainForm.oldCellValue">
+            <summary>
+            Предыдущее значение ячейки в таблице.
+            Используется для восстановления значения при некорректном редактировании.
+            </summary>
+        </member>
+        <member name="F:KR_23VP2_Muraviev.MainForm.controller">
+            <summary>
+            Контроллер для управления логикой работы с товарами.
+            </summary>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.MainForm.#ctor">
+            <summary>
+            Конструктор формы.
+            </summary>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.MainForm.createDBToolStripMenuItem_Click(System.Object,System.EventArgs)">
+            <summary>
+            Создание пустой таблицы базы данных.
+            </summary>
+            <param name="sender">Объект, вызвавший событие.</param>
+            <param name="e">Аргументы события.</param>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.MainForm.deleteDBToolStripMenuItem_Click(System.Object,System.EventArgs)">
+            <summary>
+            Удаление таблицы базы данных.
+            </summary>
+            <param name="sender">Объект, вызвавший событие.</param>
+            <param name="e">Аргументы события.</param>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.MainForm.opened_db_Click(System.Object,System.EventArgs)">
+            <summary>
+            Открытие выбранной таблицы базы данных.
+            </summary>
+            <param name="sender">Объект, вызвавший событие.</param>
+            <param name="e">Аргументы события.</param>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.MainForm.refresh_button_Click(System.Object,System.EventArgs)">
+            <summary>
+            Вывод всех элементов из БД.
+            </summary>
+            <param name="sender">Объект, вызвавший событие.</param>
+            <param name="e">Аргументы события.</param>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.MainForm.edit_button_Click(System.Object,System.EventArgs)">
+            <summary>
+            Редактирование таблицы.
+            </summary>
+            <param name="sender">Объект, вызвавший событие.</param>
+            <param name="e">Аргументы события.</param>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.MainForm.close_edit_button_Click(System.Object,System.EventArgs)">
+            <summary>
+            Нажатие на кнопку "Отменить изменения".
+            Все внесенные изменения не будут сохраняться.
+            </summary>
+            <param name="sender">Объект, вызвавший событие.</param>
+            <param name="e">Аргументы события.</param>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.MainForm.save_edit_button_Click(System.Object,System.EventArgs)">
+            <summary>
+            Нажатие на кнопку "Сохранить изменения".
+            Все внесенные изменения будут сохранены и внесены в таблицу БД.
+            </summary>
+            <param name="sender">Объект, вызвавший событие.</param>
+            <param name="e">Аргументы события.</param>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.MainForm.ShowAll">
+            <summary>
+            Вывод всех элементов из БД.
+            </summary>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.MainForm.StartEditing">
+            <summary>
+            Открыть редактирование.
+            </summary>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.MainForm.CloseEditing">
+            <summary>
+            Закрыть редактирование.
+            </summary>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.MainForm.table_of_data_CellBeginEdit(System.Object,System.Windows.Forms.DataGridViewCellCancelEventArgs)">
+            <summary>
+            Сохранение изначального значения кол-ва/цены.
+            </summary>
+            <param name="sender">Объект, вызвавший событие.</param>
+            <param name="e">Аргументы события.</param>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.MainForm.table_of_data_CellEndEdit(System.Object,System.Windows.Forms.DataGridViewCellEventArgs)">
+            <summary>
+            Проверка на корректность введенного значения кол-ва/цены.
+            </summary>
+            <param name="sender">Объект, вызвавший событие.</param>
+            <param name="e">Аргументы события.</param>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.MainForm.add_button_Click(System.Object,System.EventArgs)">
+            <summary>
+            Нажатие на кнопку "Добавить новый".
+            Открывает форму добавления нового товара.
+            </summary>
+            <param name="sender">Объект, вызвавший событие.</param>
+            <param name="e">Аргументы события.</param>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.MainForm.delete_button_Click(System.Object,System.EventArgs)">
+            <summary>
+            Нажатие на кнопку "Удалить выбранные".
+            Удаляет выбранные пользователем элементы из таблицы.
+            </summary>
+            <param name="sender">Объект, вызвавший событие.</param>
+            <param name="e">Аргументы события.</param>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.MainForm.find_name_TextChanged(System.Object,System.EventArgs)">
+            <summary>
+            Поиск по названию.
+            </summary>
+            <param name="sender">Объект, вызвавший событие.</param>
+            <param name="e">Аргументы события.</param>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.MainForm.reset_filter_button_Click(System.Object,System.EventArgs)">
+            <summary>
+            Нажатие на кнопку "Сбросить фильтр".
+            Сбрасывает фильтр.
+            </summary>
+            <param name="sender">Объект, вызвавший событие.</param>
+            <param name="e">Аргументы события.</param>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.MainForm.filter_checkbox_ItemCheck(System.Object,System.Windows.Forms.ItemCheckEventArgs)">
+            <summary>
+            Смена элемента CheckedListBox.
+            </summary>
+            <param name="sender">Объект, вызвавший событие.</param>
+            <param name="e">Аргументы события.</param>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.MainForm.FilterByCategories">
+            <summary>
+            Фильтровать по выбранным категориям.
+            </summary>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.MainForm.generateReportToolStripMenuItem_Click(System.Object,System.EventArgs)">
+            <summary>
+            Формирование отчета в виде PDF-файла с таблицей базы данных.
+            </summary>
+            <param name="sender">Объект, вызвавший событие.</param>
+            <param name="e">Аргументы события.</param>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.MainForm.MainForm_Resize(System.Object,System.EventArgs)">
+            <summary>
+            Обработчик изменения размера главной формы.
+            </summary>
+            <param name="sender">Объект, вызвавший событие.</param>
+            <param name="e">Аргументы события.</param>
+        </member>
+        <member name="F:KR_23VP2_Muraviev.MainForm.components">
+            <summary>
+            Обязательная переменная конструктора.
+            </summary>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.MainForm.Dispose(System.Boolean)">
+            <summary>
+            Освободить все используемые ресурсы.
+            </summary>
+            <param name="disposing">истинно, если управляемый ресурс должен быть удален; иначе ложно.</param>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.MainForm.InitializeComponent">
+            <summary>
+            Требуемый метод для поддержки конструктора — не изменяйте 
+            содержимое этого метода с помощью редактора кода.
+            </summary>
+        </member>
+        <member name="T:KR_23VP2_Muraviev.FormAddItem">
+            <summary>
+            Класс формы для добавления товаров.
+            </summary>
+        </member>
+        <member name="P:KR_23VP2_Muraviev.FormAddItem.name">
+            <summary>
+            Название товара.
+            </summary>
+        </member>
+        <member name="P:KR_23VP2_Muraviev.FormAddItem.category">
+            <summary>
+            Категория товара.
+            </summary>
+        </member>
+        <member name="P:KR_23VP2_Muraviev.FormAddItem.amount">
+            <summary>
+            Количество товара на складе.
+            </summary>
+        </member>
+        <member name="P:KR_23VP2_Muraviev.FormAddItem.price">
+            <summary>
+            Цена за единицу товара.
+            </summary>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.FormAddItem.#ctor">
+            <summary>
+            Конструктор формы.
+            </summary>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.FormAddItem.add_button_Click(System.Object,System.EventArgs)">
+            <summary>
+            Нажатие на кнопку "Добавить".
+            Сохраняет введенные пользователем данные и передает их основной форме.
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="F:KR_23VP2_Muraviev.FormAddItem.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.FormAddItem.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.FormAddItem.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:KR_23VP2_Muraviev.Program.Main">
+            <summary>
+            Главная точка входа для приложения.
+            </summary>
+        </member>
+        <member name="T:KR_23VP2_Muraviev.Properties.Resources">
+            <summary>
+              Класс ресурсов со строгим типом для поиска локализованных строк и пр.
+            </summary>
+        </member>
+        <member name="P:KR_23VP2_Muraviev.Properties.Resources.ResourceManager">
+            <summary>
+              Возврат кэшированного экземпляра ResourceManager, используемого этим классом.
+            </summary>
+        </member>
+        <member name="P:KR_23VP2_Muraviev.Properties.Resources.Culture">
+            <summary>
+              Переопределяет свойство CurrentUICulture текущего потока для всех
+              подстановки ресурсов с помощью этого класса ресурсов со строгим типом.
+            </summary>
+        </member>
+    </members>
+</doc>
